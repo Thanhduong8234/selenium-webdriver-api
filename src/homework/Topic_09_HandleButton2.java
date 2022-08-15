@@ -9,6 +9,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -134,22 +135,23 @@ public class Topic_09_HandleButton2 {
 	}
 
 	@Test
-	private void TC09_AuthenticationAlertAutoIT() {
+	private void TC09_AuthenticationAlertAutoIT() throws IOException {
 
-		String username = "admin";
-		String password = "admin";
-		driver.get("http://the-internet.herokuapp.com/basic_auth");
-
-		alert = driver.switchTo().alert();
-		alert.sendKeys(username);
-		alert.sendKeys("(TAB)");
-		alert.sendKeys(password);
-		alert.accept();
-		WebElement result = driver.findElement(By.tagName("p"));
-
+		String username="admin";
+		String password="admin";
+		String rootFolder=System.getProperty("user.dir");
+		String firefoxAuthen=rootFolder+"\\autoITScript\\authen_firefox.exe";
+		String chromeAuthen=rootFolder+"\\autoITScript\\authen_chrome.exe";
+		String authenUrl="http://the-internet.herokuapp.com/basic_auth";
 		
-		assertTrue(result.getText().contains("Congratulations! You must have the proper credentials."));
-
+		if(driver.toString().contains("firefox")){
+		       Runtime.getRuntime().exec(new String[]{firefoxAuthen,username,password});
+		}else if(driver.toString().contains("chrome")){
+		       Runtime.getRuntime().exec(new String[]{chromeAuthen,username,password});
+		}
+		
+		driver.get(authenUrl);
+		assertTrue(driver.findElement(By.xpath("\\h3[text()='Basic Auth']")).isDisplayed());
 	}
 
 // Function
